@@ -2,17 +2,20 @@
 
 import { Draggable, Droppable } from '@hello-pangea/dnd'
 
-import type { ColumnType, TaskType } from '@/lib/types'
+import { useBoard } from '@/lib/store'
 
 import Task from '@/components/task'
 
 type ColumnProps = {
-  column: ColumnType
+  columnId: string
   index: number
-  tasks: TaskType[]
 }
 
-export default function Column({ column, tasks, index }: ColumnProps) {
+export default function Column({ columnId, index }: ColumnProps) {
+  const columns = useBoard((state) => state.columns)
+
+  const column = columns[columnId]
+
   return (
     <Draggable draggableId={column.id} index={index}>
       {({ draggableProps, innerRef, dragHandleProps }) => (
@@ -34,8 +37,8 @@ export default function Column({ column, tasks, index }: ColumnProps) {
                 {...droppableProps}
                 className={`flex-1 min-h-25 p-2 transition ${isDraggingOver ? 'bg-foreground/5' : 'bg-background'}`}
               >
-                {tasks.map((task, index) => (
-                  <Task key={task.id} task={task} index={index} />
+                {column.taskIds.map((taskId, index) => (
+                  <Task key={taskId} taskId={taskId} index={index} />
                 ))}
                 {placeholder}
               </div>

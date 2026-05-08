@@ -2,14 +2,18 @@
 
 import { Draggable } from '@hello-pangea/dnd'
 
-import { TaskType } from '@/lib/types'
+import { useBoard } from '@/lib/store'
 
 type TaskProps = {
-  task: TaskType
+  taskId: string
   index: number
 }
 
-export default function Task({ task, index }: TaskProps) {
+export default function Task({ taskId, index }: TaskProps) {
+  const tasks = useBoard((state) => state.tasks)
+
+  const task = tasks[taskId]
+
   return (
     <Draggable draggableId={task.id} index={index}>
       {({ innerRef, draggableProps, dragHandleProps }, { isDragging }) => (
