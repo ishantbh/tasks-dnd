@@ -13,7 +13,7 @@ type ColumnProps = {
 
 export default function Column({ column, tasks }: ColumnProps) {
   return (
-    <div className='m-2 border rounded border-foreground/15'>
+    <div className='w-55 m-2 border rounded border-foreground/15 flex flex-col'>
       <h2 className='p-2 text-lg font-semibold'>{column.title}</h2>
       <Droppable droppableId={column.id}>
         {({ innerRef, droppableProps, placeholder }, { isDraggingOver }) => (

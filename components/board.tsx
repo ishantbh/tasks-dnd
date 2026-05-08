@@ -22,17 +22,47 @@ export default function Board() {
       return
     }
 
-    setBoard((board) => {
-      const column = board.columns[source.droppableId]
-      const newTaskIds = [...column.taskIds]
-      newTaskIds.splice(source.index, 1)
-      newTaskIds.splice(destination.index, 0, draggableId)
+    // Reorder items in the same column
+    if (destination.droppableId === source.droppableId) {
+      setBoard((board) => {
+        const start = board.columns[source.droppableId]
+        const newTaskIds = [...start.taskIds]
+        newTaskIds.splice(source.index, 1)
+        newTaskIds.splice(destination.index, 0, draggableId)
 
-      const newColumn = { ...column, taskIds: newTaskIds }
+        const newColumn = { ...start, taskIds: newTaskIds }
+
+        const newBoard = {
+          ...board,
+          columns: { ...board.columns, [newColumn.id]: newColumn },
+        }
+
+        return newBoard
+      })
+
+      return
+    }
+
+    // Moving items between columns
+    setBoard((board) => {
+      const start = board.columns[source.droppableId]
+      const finish = board.columns[destination.droppableId]
+
+      const startTaskIds = [...start.taskIds]
+      startTaskIds.splice(source.index, 1)
+      const newStart = { ...start, taskIds: startTaskIds }
+
+      const finishTaskIds = [...finish.taskIds]
+      finishTaskIds.splice(destination.index, 0, draggableId)
+      const newFinish = { ...finish, taskIds: finishTaskIds }
 
       const newBoard = {
         ...board,
-        columns: { ...board.columns, [newColumn.id]: newColumn },
+        columns: {
+          ...board.columns,
+          [newStart.id]: newStart,
+          [newFinish.id]: newFinish,
+        },
       }
 
       return newBoard
@@ -40,7 +70,7 @@ export default function Board() {
   }
 
   return (
-    <div>
+    <div className='flex'>
       <DragDropContext onDragEnd={handleDragEnd}>
         {board.columnOrder.map((columnId) => {
           const column = board.columns[columnId]
