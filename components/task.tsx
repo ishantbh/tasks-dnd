@@ -16,9 +16,26 @@ export default function Task({ task, index }: TaskProps) {
         <div
           ref={innerRef}
           {...draggableProps}
-          {...dragHandleProps}
-          className={`border border-foreground/15 p-2 mb-2 rounded ${isDragging ? 'bg-gray-900' : 'bg-background'}`}
+          className={`border border-foreground/15 p-2 mb-2 rounded flex items-center gap-2 ${isDragging ? 'bg-gray-900' : 'bg-background'}`}
         >
+          <span {...dragHandleProps} className='size-4.5 text-foreground/50'>
+            <svg
+              xmlns='http://www.w3.org/2000/svg'
+              viewBox='0 0 24 24'
+              fill='none'
+              stroke='currentColor'
+              strokeWidth='2'
+              strokeLinecap='round'
+              strokeLinejoin='round'
+            >
+              <circle cx='9' cy='12' r='1' />
+              <circle cx='9' cy='5' r='1' />
+              <circle cx='9' cy='19' r='1' />
+              <circle cx='15' cy='12' r='1' />
+              <circle cx='15' cy='5' r='1' />
+              <circle cx='15' cy='19' r='1' />
+            </svg>
+          </span>
           {task.content}
         </div>
       )}
