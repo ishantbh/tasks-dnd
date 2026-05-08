@@ -1,9 +1,10 @@
 'use client'
 
+import { Droppable } from '@hello-pangea/dnd'
+
 import type { ColumnType, TaskType } from '@/lib/types'
 
 import Task from '@/components/task'
-import { Droppable } from '@hello-pangea/dnd'
 
 type ColumnProps = {
   column: ColumnType
@@ -15,8 +16,12 @@ export default function Column({ column, tasks }: ColumnProps) {
     <div className='m-2 border rounded border-foreground/15'>
       <h2 className='p-2 text-lg font-semibold'>{column.title}</h2>
       <Droppable droppableId={column.id}>
-        {({ innerRef, droppableProps, placeholder }) => (
-          <div ref={innerRef} {...droppableProps} className='p-2'>
+        {({ innerRef, droppableProps, placeholder }, { isDraggingOver }) => (
+          <div
+            ref={innerRef}
+            {...droppableProps}
+            className={`p-2 transition ${isDraggingOver ? 'bg-gray-900' : 'bg-background'}`}
+          >
             {tasks.map((task, index) => (
               <Task key={task.id} task={task} index={index} />
             ))}
