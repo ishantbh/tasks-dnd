@@ -16,7 +16,7 @@ export default function Task({ task, index }: TaskProps) {
         <div
           ref={innerRef}
           {...draggableProps}
-          className={`border border-foreground/15 p-2 mb-2 rounded flex items-center gap-2 ${isDragging ? 'bg-gray-900' : 'bg-background'}`}
+          className={`border border-foreground/15 p-2 mb-2 rounded flex items-center gap-2 ${isDragging ? 'bg-foreground/10' : 'bg-background'}`}
         >
           <span {...dragHandleProps} className='size-4.5 text-foreground/50'>
             <svg

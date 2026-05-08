@@ -20,7 +20,7 @@ export default function Column({ column, tasks }: ColumnProps) {
           <div
             ref={innerRef}
             {...droppableProps}
-            className={`p-2 transition ${isDraggingOver ? 'bg-gray-900' : 'bg-background'}`}
+            className={`flex-1 min-h-25 p-2 transition ${isDraggingOver ? 'bg-foreground/5' : 'bg-background'}`}
           >
             {tasks.map((task, index) => (
               <Task key={task.id} task={task} index={index} />
