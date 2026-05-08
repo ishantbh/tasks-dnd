@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 
-import { DragDropContext, type DropResult } from '@hello-pangea/dnd'
+import { DragDropContext, Droppable, type DropResult } from '@hello-pangea/dnd'
 
 import { initialData } from '@/lib/data'
 
@@ -12,13 +12,28 @@ export default function Board() {
   const [board, setBoard] = useState(initialData)
 
   function handleDragEnd(result: DropResult<string>) {
-    const { draggableId, source, destination } = result
+    const { draggableId, source, destination, type } = result
 
     if (
       !destination ||
       (source.droppableId === destination.droppableId &&
         source.index === destination.index)
     ) {
+      return
+    }
+
+    if (type === 'column') {
+      const newColumnOrder = [...board.columnOrder]
+      newColumnOrder.splice(source.index, 1)
+      newColumnOrder.splice(destination.index, 0, draggableId)
+
+      const newBoard = {
+        ...board,
+        columnOrder: newColumnOrder,
+      }
+
+      setBoard(newBoard)
+
       return
     }
 
@@ -70,15 +85,27 @@ export default function Board() {
   }
 
   return (
-    <div className='flex'>
-      <DragDropContext onDragEnd={handleDragEnd}>
-        {board.columnOrder.map((columnId) => {
-          const column = board.columns[columnId]
-          const tasks = column.taskIds.map((taskId) => board.tasks[taskId])
+    <DragDropContext onDragEnd={handleDragEnd}>
+      <Droppable droppableId='board' direction='horizontal' type='column'>
+        {({ droppableProps, innerRef, placeholder }) => (
+          <div {...droppableProps} ref={innerRef} className='flex-1 flex'>
+            {board.columnOrder.map((columnId, index) => {
+              const column = board.columns[columnId]
+              const tasks = column.taskIds.map((taskId) => board.tasks[taskId])
 
-          return <Column key={columnId} column={column} tasks={tasks} />
-        })}
-      </DragDropContext>
-    </div>
+              return (
+                <Column
+                  key={columnId}
+                  column={column}
+                  tasks={tasks}
+                  index={index}
+                />
+              )
+            })}
+            {placeholder}
+          </div>
+        )}
+      </Droppable>
+    </DragDropContext>
   )
 }
