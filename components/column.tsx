@@ -2,6 +2,7 @@
 
 import { memo } from 'react'
 
+import { useShallow } from 'zustand/shallow'
 import { Draggable, Droppable } from '@hello-pangea/dnd'
 
 import { useBoard } from '@/lib/store'
@@ -14,7 +15,12 @@ type ColumnProps = {
 }
 
 const Column = memo(function ({ columnId, index }: ColumnProps) {
-  const column = useBoard((state) => state.columns[columnId])
+  const { column, taskIds } = useBoard(
+    useShallow((state) => ({
+      column: state.columns[columnId],
+      taskIds: state.taskOrderByColumn[columnId],
+    })),
+  )
 
   return (
     <Draggable draggableId={column.id} index={index}>
@@ -37,7 +43,7 @@ const Column = memo(function ({ columnId, index }: ColumnProps) {
                 {...droppableProps}
                 className={`flex-1 min-h-25 p-2 transition ${isDraggingOver ? 'bg-foreground/5' : 'bg-background'}`}
               >
-                {column.taskIds.map((taskId, index) => (
+                {taskIds.map((taskId, index) => (
                   <Task key={taskId} taskId={taskId} index={index} />
                 ))}
                 {placeholder}

@@ -30,7 +30,6 @@ export default function Board() {
 
     if (type === 'column') {
       reorderColumns({
-        columnId: draggableId,
         sourceIndex: source.index,
         destinationIndex: destination.index,
       })
@@ -41,7 +40,6 @@ export default function Board() {
     // Reorder items in the same column
     if (destination.droppableId === source.droppableId) {
       reorderTasks({
-        taskId: draggableId,
         columnId: source.droppableId,
         sourceIndex: source.index,
         destinationIndex: destination.index,
@@ -52,7 +50,6 @@ export default function Board() {
 
     // Moving items between columns
     moveTask({
-      taskId: draggableId,
       sourceColumnId: source.droppableId,
       destinationColumnId: destination.droppableId,
       sourceIndex: source.index,
