@@ -4,7 +4,7 @@ import { memo } from 'react'
 
 import { Draggable } from '@hello-pangea/dnd'
 
-import { useBoard } from '@/lib/store'
+import { useBoardStore } from '@/hooks/useBoardStore'
 
 type TaskProps = {
   taskId: string
@@ -12,7 +12,7 @@ type TaskProps = {
 }
 
 const Task = memo(function ({ taskId, index }: TaskProps) {
-  const task = useBoard((state) => state.tasks[taskId])
+  const task = useBoardStore((state) => state.tasks[taskId])
 
   return (
     <Draggable draggableId={task.id} index={index}>

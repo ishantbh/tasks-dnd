@@ -5,7 +5,7 @@ import { memo } from 'react'
 import { useShallow } from 'zustand/shallow'
 import { Draggable, Droppable } from '@hello-pangea/dnd'
 
-import { useBoard } from '@/lib/store'
+import { useBoardStore } from '@/hooks/useBoardStore'
 
 import Task from '@/components/task'
 
@@ -15,7 +15,7 @@ type ColumnProps = {
 }
 
 const Column = memo(function ({ columnId, index }: ColumnProps) {
-  const { column, taskIds } = useBoard(
+  const { column, taskIds } = useBoardStore(
     useShallow((state) => ({
       column: state.columns[columnId],
       taskIds: state.taskOrderByColumn[columnId],
