@@ -1,13 +1,15 @@
 import { create } from 'zustand'
 
-import type { ColumnType, TaskType } from '@/lib/types'
-import { initialData } from '@/lib/data'
+import type { Column, Task } from '@/db/schema'
+import type { BoardType } from '@/lib/types'
 
 type BoardState = {
-  tasks: Record<string, TaskType>
-  columns: Record<string, ColumnType>
+  tasks: Record<string, Task>
+  columns: Record<string, Column>
   taskOrderByColumn: Record<string, string[]>
   columnOrder: string[]
+
+  hydrate: (data: BoardType) => void
 
   reorderColumns: ({
     sourceIndex,
@@ -41,7 +43,12 @@ type BoardState = {
 }
 
 export const useBoard = create<BoardState>()((set) => ({
-  ...initialData,
+  tasks: {},
+  columns: {},
+  taskOrderByColumn: {},
+  columnOrder: [],
+
+  hydrate: (data) => set(() => ({ ...data })),
 
   reorderColumns: ({ sourceIndex, destinationIndex }) =>
     set(({ columnOrder }) => {
