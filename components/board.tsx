@@ -1,24 +1,33 @@
 'use client'
 
+import { useEffect } from 'react'
+
 import { useShallow } from 'zustand/shallow'
 import { DragDropContext, Droppable, type DropResult } from '@hello-pangea/dnd'
 
+import type { BoardType } from '@/lib/types'
 import { useBoard } from '@/lib/store'
 
 import Column from '@/components/column'
 
-export default function Board() {
-  const { columnOrder, reorderColumns, reorderTasks, moveTask } = useBoard(
-    useShallow((state) => ({
-      columnOrder: state.columnOrder,
-      reorderColumns: state.reorderColumns,
-      reorderTasks: state.reorderTasks,
-      moveTask: state.moveTask,
-    })),
-  )
+type BoardProps = {
+  initialData: BoardType
+}
 
-  const handleDragEnd = function (result: DropResult<string>) {
-    const { draggableId, source, destination, type } = result
+export default function Board({ initialData }: BoardProps) {
+  const { columnOrder, hydrate, reorderColumns, reorderTasks, moveTask } =
+    useBoard(
+      useShallow((state) => ({
+        columnOrder: state.columnOrder,
+        hydrate: state.hydrate,
+        reorderColumns: state.reorderColumns,
+        reorderTasks: state.reorderTasks,
+        moveTask: state.moveTask,
+      })),
+    )
+
+  const handleDragEnd = async function (result: DropResult<string>) {
+    const { source, destination, type } = result
 
     if (
       !destination ||
@@ -56,6 +65,10 @@ export default function Board() {
       destinationIndex: destination.index,
     })
   }
+
+  useEffect(() => {
+    hydrate(initialData)
+  }, [initialData, hydrate])
 
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
