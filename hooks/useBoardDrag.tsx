@@ -3,7 +3,11 @@ import { DropResult } from '@hello-pangea/dnd'
 
 import { useBoardStore } from '@/hooks/useBoardStore'
 import { updateColumnPosition, updateTaskPosition } from '@/lib/actions'
-import { getPosition } from '@/lib/utils'
+import {
+  computeColumnReorder,
+  computeTaskMove,
+  computeTaskReorder,
+} from '@/lib/utils'
 
 export function useBoardDrag() {
   const {
@@ -36,15 +40,15 @@ export function useBoardDrag() {
     }
 
     if (type === 'column') {
-      const newColumnOrder = [...columnOrder]
-      const [movedColumnId] = newColumnOrder.splice(source.index, 1)
-      newColumnOrder.splice(destination.index, 0, movedColumnId)
+      const { newColumnOrder, movedColumnId, newPosition } =
+        computeColumnReorder({
+          columns,
+          columnOrder,
+          sourceIndex: source.index,
+          destinationIndex: destination.index,
+        })
 
       setColumnOrder(newColumnOrder)
-
-      const prev = columns[newColumnOrder[destination.index - 1]]?.position
-      const next = columns[newColumnOrder[destination.index + 1]]?.position
-      const newPosition = getPosition(prev, next)
 
       await updateColumnPosition({ id: movedColumnId, position: newPosition })
 
@@ -53,18 +57,18 @@ export function useBoardDrag() {
 
     // Reorder items in the same column
     if (destination.droppableId === source.droppableId) {
-      const newTaskIds = [...taskOrderByColumn[source.droppableId]]
-      const [movedTaskId] = newTaskIds.splice(source.index, 1)
-      newTaskIds.splice(destination.index, 0, movedTaskId)
+      const { newTaskIds, movedTaskId, newPosition } = computeTaskReorder({
+        tasks,
+        taskOrder: taskOrderByColumn,
+        columnId: source.droppableId,
+        sourceIndex: source.index,
+        destinationIndex: destination.index,
+      })
 
       setTaskOrderByColumn({
         ...taskOrderByColumn,
         [source.droppableId]: newTaskIds,
       })
-
-      const prev = tasks[newTaskIds[destination.index - 1]]?.position
-      const next = tasks[newTaskIds[destination.index + 1]]?.position
-      const newPosition = getPosition(prev, next)
 
       await updateTaskPosition({ id: movedTaskId, position: newPosition })
 
@@ -72,21 +76,21 @@ export function useBoardDrag() {
     }
 
     // Moving items between columns
-    const sourceTaskIds = [...taskOrderByColumn[source.droppableId]]
-    const [movedTaskId] = sourceTaskIds.splice(source.index, 1)
-
-    const destinationTaskIds = [...taskOrderByColumn[destination.droppableId]]
-    destinationTaskIds.splice(destination.index, 0, movedTaskId)
+    const { sourceTaskIds, destinationTaskIds, movedTaskId, newPosition } =
+      computeTaskMove({
+        tasks,
+        taskOrder: taskOrderByColumn,
+        sourceColumnId: source.droppableId,
+        sourceIndex: source.index,
+        destinationColumnId: destination.droppableId,
+        destinationIndex: destination.index,
+      })
 
     setTaskOrderByColumn({
       ...taskOrderByColumn,
       [source.droppableId]: sourceTaskIds,
       [destination.droppableId]: destinationTaskIds,
     })
-
-    const prev = tasks[sourceTaskIds[destination.index - 1]]?.position
-    const next = tasks[sourceTaskIds[destination.index + 1]]?.position
-    const newPosition = getPosition(prev, next)
 
     await updateTaskPosition({
       id: movedTaskId,
