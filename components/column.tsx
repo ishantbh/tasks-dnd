@@ -1,5 +1,7 @@
 'use client'
 
+import { memo } from 'react'
+
 import { Draggable, Droppable } from '@hello-pangea/dnd'
 
 import { useBoard } from '@/lib/store'
@@ -11,10 +13,8 @@ type ColumnProps = {
   index: number
 }
 
-export default function Column({ columnId, index }: ColumnProps) {
-  const columns = useBoard((state) => state.columns)
-
-  const column = columns[columnId]
+const Column = memo(function ({ columnId, index }: ColumnProps) {
+  const column = useBoard((state) => state.columns[columnId])
 
   return (
     <Draggable draggableId={column.id} index={index}>
@@ -48,4 +48,6 @@ export default function Column({ columnId, index }: ColumnProps) {
       )}
     </Draggable>
   )
-}
+})
+
+export default Column

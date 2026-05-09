@@ -1,5 +1,6 @@
 'use client'
 
+import { useShallow } from 'zustand/shallow'
 import { DragDropContext, Droppable, type DropResult } from '@hello-pangea/dnd'
 
 import { useBoard } from '@/lib/store'
@@ -7,12 +8,16 @@ import { useBoard } from '@/lib/store'
 import Column from '@/components/column'
 
 export default function Board() {
-  const columnOrder = useBoard((state) => state.columnOrder)
-  const reorderColumns = useBoard((state) => state.reorderColumns)
-  const reorderTasks = useBoard((state) => state.reorderTasks)
-  const moveTask = useBoard((state) => state.moveTask)
+  const { columnOrder, reorderColumns, reorderTasks, moveTask } = useBoard(
+    useShallow((state) => ({
+      columnOrder: state.columnOrder,
+      reorderColumns: state.reorderColumns,
+      reorderTasks: state.reorderTasks,
+      moveTask: state.moveTask,
+    })),
+  )
 
-  function handleDragEnd(result: DropResult<string>) {
+  const handleDragEnd = function (result: DropResult<string>) {
     const { draggableId, source, destination, type } = result
 
     if (

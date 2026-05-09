@@ -1,5 +1,7 @@
 'use client'
 
+import { memo } from 'react'
+
 import { Draggable } from '@hello-pangea/dnd'
 
 import { useBoard } from '@/lib/store'
@@ -9,10 +11,8 @@ type TaskProps = {
   index: number
 }
 
-export default function Task({ taskId, index }: TaskProps) {
-  const tasks = useBoard((state) => state.tasks)
-
-  const task = tasks[taskId]
+const Task = memo(function ({ taskId, index }: TaskProps) {
+  const task = useBoard((state) => state.tasks[taskId])
 
   return (
     <Draggable draggableId={task.id} index={index}>
@@ -45,4 +45,6 @@ export default function Task({ taskId, index }: TaskProps) {
       )}
     </Draggable>
   )
-}
+})
+
+export default Task
