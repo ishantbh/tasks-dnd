@@ -1,5 +1,4 @@
 import type { Column, Task } from '@/db/schema'
-import type { BoardType } from '@/lib/types'
 
 // Convert the board data from db to a normalized format for client state
 export function normalizeBoardData({
@@ -8,7 +7,7 @@ export function normalizeBoardData({
 }: {
   columns: Column[]
   tasks: Task[]
-}): BoardType {
+}) {
   const tasks: Record<string, Task> = {}
   const columns: Record<string, Column> = {}
   const taskOrderByColumn: Record<string, string[]> = {}
