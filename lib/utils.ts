@@ -34,3 +34,10 @@ export function normalizeBoardData({
     columnOrder,
   }
 }
+
+export function getPosition(prev?: number, next?: number): number {
+  if (!prev && !next) return 1000
+  if (!prev) return next! / 2
+  if (!next) return prev + 1000
+  return (prev + next) / 2
+}
