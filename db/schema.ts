@@ -1,8 +1,8 @@
 import { relations } from 'drizzle-orm'
 import {
-  doublePrecision,
   index,
   pgTable,
+  text,
   timestamp,
   uuid,
   varchar,
@@ -14,7 +14,7 @@ export const columnTable = pgTable(
   {
     id: uuid('id').primaryKey().defaultRandom(),
     title: varchar('title', { length: 255 }).notNull(),
-    position: doublePrecision('position').notNull(),
+    position: text('position').notNull(),
     createdAt: timestamp('created_at', {
       mode: 'date',
       precision: 3,
@@ -42,7 +42,7 @@ export const taskTable = pgTable(
       .notNull()
       .references(() => columnTable.id, { onDelete: 'cascade' }),
     content: varchar('content', { length: 255 }).notNull(),
-    position: doublePrecision('position').notNull(),
+    position: text('position').notNull(),
     createdAt: timestamp('created_at', {
       mode: 'date',
       precision: 3,
