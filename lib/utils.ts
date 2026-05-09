@@ -1,3 +1,5 @@
+import { generateKeyBetween } from 'fractional-indexing'
+
 import type { Column, Task } from '@/db/schema'
 
 // Convert the board data from db to a normalized format for client state
@@ -35,13 +37,6 @@ export function normalizeBoardData({
   }
 }
 
-function getPosition(prev?: number, next?: number): number {
-  if (!prev && !next) return 1000
-  if (!prev) return next! / 2
-  if (!next) return prev + 1000
-  return (prev + next) / 2
-}
-
 export function computeColumnReorder({
   columns,
   columnOrder,
@@ -59,7 +54,7 @@ export function computeColumnReorder({
 
   const prev = columns[newColumnOrder[destinationIndex - 1]]?.position
   const next = columns[newColumnOrder[destinationIndex + 1]]?.position
-  const newPosition = getPosition(prev, next)
+  const newPosition = generateKeyBetween(prev, next)
 
   return { newColumnOrder, movedColumnId, newPosition }
 }
@@ -83,7 +78,7 @@ export function computeTaskReorder({
 
   const prev = tasks[newTaskIds[destinationIndex - 1]]?.position
   const next = tasks[newTaskIds[destinationIndex + 1]]?.position
-  const newPosition = getPosition(prev, next)
+  const newPosition = generateKeyBetween(prev, next)
 
   return { newTaskIds, movedTaskId, newPosition }
 }
@@ -111,7 +106,7 @@ export function computeTaskMove({
 
   const prev = tasks[sourceTaskIds[destinationIndex - 1]]?.position
   const next = tasks[sourceTaskIds[destinationIndex + 1]]?.position
-  const newPosition = getPosition(prev, next)
+  const newPosition = generateKeyBetween(prev, next)
 
   return {
     sourceTaskIds,
