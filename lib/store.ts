@@ -70,9 +70,6 @@ export const useBoard = create<BoardState>()((set) => ({
     destinationIndex,
   }) =>
     set(({ taskOrderByColumn }) => {
-      // const sourceColumn = columns[sourceColumnId]
-      // const destinationColumn = columns[destinationColumnId]
-
       const sourceTaskIds = [...taskOrderByColumn[sourceColumnId]]
       const [movedTaskId] = sourceTaskIds.splice(sourceIndex, 1)
 
