@@ -10,7 +10,7 @@ export async function updateColumnPosition({
   position,
 }: {
   id: string
-  position: number
+  position: string
 }) {
   await db.update(columnTable).set({ position }).where(eq(columnTable.id, id))
 }
@@ -21,7 +21,7 @@ export async function updateTaskPosition({
   columnId,
 }: {
   id: string
-  position: number
+  position: string
   columnId?: string
 }) {
   await db
