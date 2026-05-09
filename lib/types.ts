@@ -1,16 +1,8 @@
+import type { Column, Task } from '@/db/schema'
+
 export type BoardType = {
-  tasks: Record<string, TaskType>
-  columns: Record<string, ColumnType>
+  tasks: Record<string, Task>
+  columns: Record<string, Column>
   taskOrderByColumn: Record<string, string[]>
   columnOrder: string[]
-}
-
-export type ColumnType = {
-  id: string
-  title: string
-}
-
-export type TaskType = {
-  id: string
-  content: string
 }
