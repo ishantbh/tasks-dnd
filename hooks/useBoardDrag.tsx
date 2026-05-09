@@ -48,9 +48,17 @@ export function useBoardDrag() {
           destinationIndex: destination.index,
         })
 
-      setColumnOrder(newColumnOrder)
+      const previousColumnOrder = columnOrder // snapshot before
 
-      await updateColumnPosition({ id: movedColumnId, position: newPosition })
+      setColumnOrder(newColumnOrder) // optimistic update
+
+      try {
+        await updateColumnPosition({ id: movedColumnId, position: newPosition })
+      } catch (err) {
+        console.log(err)
+        setColumnOrder(previousColumnOrder) // rollback
+        // TODO: notify user of error
+      }
 
       return
     }
@@ -65,12 +73,20 @@ export function useBoardDrag() {
         destinationIndex: destination.index,
       })
 
+      const previousTaskOrder = taskOrderByColumn // snapshot before
+
       setTaskOrderByColumn({
         ...taskOrderByColumn,
         [source.droppableId]: newTaskIds,
       })
 
-      await updateTaskPosition({ id: movedTaskId, position: newPosition })
+      try {
+        await updateTaskPosition({ id: movedTaskId, position: newPosition })
+      } catch (err) {
+        console.log(err)
+        setTaskOrderByColumn(previousTaskOrder) // rollback
+        // TODO: notify user of error
+      }
 
       return
     }
@@ -86,17 +102,25 @@ export function useBoardDrag() {
         destinationIndex: destination.index,
       })
 
+    const previousTaskOrder = taskOrderByColumn // snapshot before
+
     setTaskOrderByColumn({
       ...taskOrderByColumn,
       [source.droppableId]: sourceTaskIds,
       [destination.droppableId]: destinationTaskIds,
     })
 
-    await updateTaskPosition({
-      id: movedTaskId,
-      position: newPosition,
-      columnId: destination.droppableId,
-    })
+    try {
+      await updateTaskPosition({
+        id: movedTaskId,
+        position: newPosition,
+        columnId: destination.droppableId,
+      })
+    } catch (err) {
+      console.log(err)
+      setTaskOrderByColumn(previousTaskOrder) // rollback
+      // TODO: notify user of error
+    }
   }
 
   return { handleDragEnd }
