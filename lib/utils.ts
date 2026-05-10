@@ -2,31 +2,22 @@ import { generateKeyBetween } from 'fractional-indexing'
 
 import type { Column, Task } from '@/db/schema'
 
+type ColumnWithTasks = Column & { tasks: Task[] }
+
 // Convert the board data from db to a normalized format for client state
-export function normalizeBoardData({
-  columns: dbColumns,
-  tasks: dbTasks,
-}: {
-  columns: Column[]
-  tasks: Task[]
-}) {
+export function normalizeBoardData(columnsWithTasks: ColumnWithTasks[]) {
   const tasks: Record<string, Task> = {}
   const columns: Record<string, Column> = {}
   const taskOrderByColumn: Record<string, string[]> = {}
   const columnOrder: string[] = []
 
-  for (const column of dbColumns) {
+  for (const column of columnsWithTasks) {
     columns[column.id] = column
-
-    taskOrderByColumn[column.id] = []
-
     columnOrder.push(column.id)
-  }
-
-  for (const task of dbTasks) {
-    tasks[task.id] = task
-
-    taskOrderByColumn[task.columnId].push(task.id)
+    taskOrderByColumn[column.id] = column.tasks.map((t) => t.id)
+    for (const task of column.tasks) {
+      tasks[task.id] = task
+    }
   }
 
   return {
