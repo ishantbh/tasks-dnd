@@ -36,3 +36,17 @@ export async function createBoard(title: string) {
 
   revalidatePath('/boards')
 }
+
+export async function createColumn({
+  boardId,
+  position,
+  title,
+}: {
+  boardId: string
+  position: string
+  title: string
+}) {
+  await db.insert(columnTable).values({ boardId, position, title })
+
+  revalidatePath(`/boards/${boardId}`)
+}
