@@ -28,7 +28,7 @@ export default async function BoardPage({
 
   return (
     <BoardStoreProvider initialData={initialData}>
-      <Board />
+      <Board boardId={boardId} />
     </BoardStoreProvider>
   )
 }
