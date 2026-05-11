@@ -1,9 +1,10 @@
 'use server'
 
+import { revalidatePath } from 'next/cache'
 import { eq } from 'drizzle-orm'
 
 import { db } from '@/db'
-import { columnTable, taskTable } from '@/db/schema'
+import { boardTable, columnTable, taskTable } from '@/db/schema'
 
 export async function updateColumnPosition({
   id,
@@ -28,4 +29,10 @@ export async function updateTaskPosition({
     .update(taskTable)
     .set({ position, ...(columnId && { columnId }) })
     .where(eq(taskTable.id, id))
+}
+
+export async function createBoard(title: string) {
+  await db.insert(boardTable).values({ title })
+
+  revalidatePath('/boards')
 }
